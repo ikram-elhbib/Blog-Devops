@@ -4,10 +4,11 @@
  * Expose
  */
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 module.exports = {
-  db: process.env.MONGODB_URL || 'mongodb://localhost/noobjs_dev',
+  db: 'mongodb://localhost:27017/nodejs-express-mongoose-demo-development',
+ // db: process.env.MONGODB_URL || 'mongodb://localhost/noobjs_dev',
   twitter: {
     clientID: process.env.TWITTER_CLIENTID,
     clientSecret: process.env.TWITTER_SECRET,
