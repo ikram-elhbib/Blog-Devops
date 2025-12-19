@@ -8,9 +8,10 @@ pipeline {
 
     stages {
         stage('Checkout') {
-    git branch: 'main', url: 'https://github.com/ikram-elhbib/Blog-Devops.git'
-}
-
+            steps {
+                git branch: 'main', url: 'https://github.com/ikram-elhbib/Blog-Devops.git'
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
