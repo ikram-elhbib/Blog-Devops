@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'docker:24.0.5'   // image avec Docker CLI
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
 
     environment {
         KUBECONFIG = '/home/jenkins/.kube/config'  // chemin vers kubeconfig sur le master
