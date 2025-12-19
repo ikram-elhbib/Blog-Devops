@@ -1,39 +1,40 @@
-# syntax = docker/dockerfile:1
+# syntax=docker/dockerfile:1
 
-# Adjust NODE_VERSION as desired
+# Ajuster la version Node.js si besoin
 ARG NODE_VERSION=24.7.0
-FROM node:${NODE_VERSION}-slim as base
+FROM node:${NODE_VERSION}-slim AS base
 
 LABEL fly_launch_runtime="Node.js"
 
-# Node.js app lives here
+# Répertoire de l'application
 WORKDIR /app
 
-# Set production environment
+# Définir l'environnement en production
 ENV NODE_ENV="production"
 
+# --- Build stage pour réduire la taille finale ---
+FROM base AS build
 
-# Throw-away build stage to reduce size of final image
-FROM base as build
-
-# Install packages needed to build node modules
+# Installer les dépendances nécessaires à la compilation des modules Node
 RUN apt-get update -qq && \
-    apt-get install -y build-essential pkg-config python-is-python3
+    apt-get install -y build-essential pkg-config python-is-python3 && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install node modules
-COPY --link package-lock.json package.json ./
-RUN npm ci
+# Copier les fichiers de dépendances et installer les modules
+COPY package*.json ./
+RUN npm ci --only=production
 
-# Copy application code
-COPY --link . .
+# Copier le reste de l'application
+COPY . .
 
-
-# Final stage for app image
+# --- Image finale ---
 FROM base
 
-# Copy built application
+# Copier les modules et l'application construite depuis le stage build
 COPY --from=build /app /app
 
-# Start the server by default, this can be overwritten at runtime
+# Exposer le port sur lequel l'application écoute
 EXPOSE 3000
-CMD [ "npm", "run", "prod" ]
+
+# Commande par défaut pour démarrer l'application
+CMD ["npm", "run", "prod"]
