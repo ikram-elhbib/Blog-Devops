@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/ikram-elhbib/Blog-Devops.git'
+                git branch: 'main', url: 'https://github.com/ikram-elhbib/Blog-Devops.git'
             }
         }
 
