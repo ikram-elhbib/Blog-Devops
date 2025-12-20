@@ -1,35 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nodeapp
+  name: blog-devops-deployment
+  labels:
+    app: blog-devops
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: nodeapp
+      app: blog-devops
   template:
     metadata:
       labels:
-        app: nodeapp
+        app: blog-devops
     spec:
       containers:
-      - name: nodeapp
-        image: blog-devops:latest
-        ports:
-        - containerPort: 3000
-        env:
-        - name: MONGO_URL
-          value: "mongodb://admin:password@mongodb:27017"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nodeapp-service
-spec:
-  type: NodePort
-  selector:
-    app: nodeapp
-  ports:
-  - port: 3000
-    targetPort: 3000
-    nodePort: 30001
+        - name: blog-devops
+          image: blog-devops:latest   # ici on utilise ton image locale
+          imagePullPolicy: Never      # très important pour que k8s ne cherche pas l'image sur Docker Hub
+          ports:
+            - containerPort: 3000
